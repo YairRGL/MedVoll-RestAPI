@@ -1,5 +1,7 @@
 package med.voll.api.medico;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -13,6 +15,7 @@ import med.voll.api.direccion.Direccion;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Medico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
