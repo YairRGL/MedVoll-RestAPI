@@ -1,13 +1,11 @@
-package med.voll.api.medico;
+package med.voll.api.domain.medico;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import med.voll.api.direccion.Direccion;
+import med.voll.api.domain.direccion.Direccion;
 
 @Table(name = "medicos")
 @Entity(name = "Medico")
