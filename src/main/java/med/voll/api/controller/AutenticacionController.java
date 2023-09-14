@@ -28,8 +28,8 @@ public class AutenticacionController {
     @PostMapping
     public ResponseEntity autenticarUsuario(@RequestBody @Valid  DatosAutenticacionUsuario datosAutenticacionUsuario){
         Authentication authToken = new UsernamePasswordAuthenticationToken(datosAutenticacionUsuario.nombreusuario(), datosAutenticacionUsuario.clave());
-        Authentication usuarioAutentiacdo = authenticationManager.authenticate(authToken);
-        String JWTtoken = tokenService.generarToken((Usuario) usuarioAutentiacdo.getPrincipal());
+        Authentication usuarioAutenticado = authenticationManager.authenticate(authToken);
+        String JWTtoken = tokenService.generarToken((Usuario) usuarioAutenticado.getPrincipal());
         return ResponseEntity.ok(new DatosJWTtoken(JWTtoken));
     }
 
