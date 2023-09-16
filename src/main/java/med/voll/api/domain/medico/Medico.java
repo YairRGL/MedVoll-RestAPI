@@ -48,7 +48,7 @@ public class Medico {
         }
 
         if(datosActualizarMedico.direccion()!=null){
-            this.direccion = direccion.actualizarDatos(datosActualizarMedico.direccion());
+            this.direccion = direccion.actualizarDireccion(datosActualizarMedico.direccion());
         }
     }
 
