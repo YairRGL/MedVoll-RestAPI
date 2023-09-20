@@ -1,5 +1,6 @@
 package med.voll.api.domain.consulta;
 
+import med.voll.api.domain.consulta.validaciones.ValidadorDeConsultas;
 import med.voll.api.domain.medico.Medico;
 import med.voll.api.domain.medico.MedicoRepository;
 import med.voll.api.domain.paciente.Paciente;
@@ -7,6 +8,8 @@ import med.voll.api.domain.paciente.PacienteRepository;
 import med.voll.api.infra.errores.ValidacionDeIntegridad;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AgendaDeConsultaService {
@@ -20,22 +23,33 @@ public class AgendaDeConsultaService {
     @Autowired
     private MedicoRepository medicoRepository;
 
+    @Autowired
+    List<ValidadorDeConsultas> validadores;
 
-    public void agendar(DatosAgendarConsulta datos){
-        if(pacienteRepository.findById(datos.idPaciente()).isPresent()){
+    public DatosDetallesConsulta agendar(DatosAgendarConsulta datos){
+        if(!pacienteRepository.findById(datos.idPaciente()).isPresent()){
             throw new ValidacionDeIntegridad("Este id para el paciente no fue encontrado");
         }
         
-        if(datos.idMedico()!=null && medicoRepository.existsById(datos.idMedico())){
+        if(datos.idMedico()!=null && !medicoRepository.existsById(datos.idMedico())){
             throw new ValidacionDeIntegridad("Este id para el medico no fue encontrado");
         }
 
+        validadores.forEach(validadorDeConsultas -> validadorDeConsultas.validar(datos));
+
         Medico medico = seleccionarMedico(datos);
+
+        if(medico==null){
+            throw new ValidacionDeIntegridad("No existen medicos disponibles para este horario y especialidad");
+        }
+
         Paciente paciente = pacienteRepository.findById(datos.idPaciente()).get();
 
         Consulta consulta = new Consulta(null, medico, paciente, datos.fecha());
 
         consultaRepository.save(consulta);
+
+        return new DatosDetallesConsulta(consulta);
     }
 
     private Medico seleccionarMedico(DatosAgendarConsulta datos) {
