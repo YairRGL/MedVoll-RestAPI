@@ -34,26 +34,25 @@ public class TokenService {
     }
 
     public String getSubject(String token){
-        if(token == null){
-            throw new RuntimeException();
+        if(token == null || token.isEmpty()){
+            throw new RuntimeException("El token no puede ser nulo o estar vacio");
         }
-
-        DecodedJWT verifier = null;
         try{
             Algorithm algorithm = Algorithm.HMAC256(apiSecret);
-            verifier = JWT.require(algorithm)
+            DecodedJWT verifier = JWT.require(algorithm)
                     .withIssuer("voll med")
                     .build().verify(token);
 
+            if(verifier.getSubject() == null || verifier.getSubject().isEmpty()){
+                throw new RuntimeException("Verifier invalido.");
+            }
+
+            return verifier.getSubject();
 
         } catch (JWTVerificationException exception){
-            System.out.println(exception);
-        }
+            throw new IllegalArgumentException("Fallo la verificacion del token: " + exception.getMessage());
 
-        if(verifier.getSubject() == null){
-            throw new RuntimeException("Verifier invalido.");
         }
-        return verifier.getSubject();
     }
 
     private Instant generarFechaExpiracion(){
